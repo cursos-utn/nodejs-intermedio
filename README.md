@@ -1,4 +1,4 @@
-##NodeJS - Intermedio
+# NodeJS - Intermedio
 
 ## Descripción
 Proyecto del curso NodeJS - Intermedio. 
