@@ -12,3 +12,14 @@ npm install
 ```
 node app.js 
 ```
+
+## Rutas de prueba
+
+* Ruta principal
+```
+http://localhost:3000/
+```
+* Ruta con manejo de errores
+```
+http://localhost:3000/prueba
+```
