@@ -1,5 +1,23 @@
 var express = require('express');
 var app = express();
+var mongoose = require('mongoose');
+
+// Conexion con la base de datos MongoDB
+mongoose.connect('mongodb://localhost/curso_nodejs_intermedio_m1u2', {}).then( () => {
+    // Conexion exitosa
+    console.log('Conexion exitosa con MongoDB');
+}).catch( (err) => {
+    console.log('No me pude conectar con MongoDB');
+    console.log(err);
+})
+
+// Definimos la estructura de los datos a guardar en Artista
+var ArtistaSchema = mongoose.Schema({
+    nombre: String
+});
+
+// Creamos un model (es la representacion del artista en nuestro sistema)
+var ArtistaModel = mongoose.model('Artista', ArtistaSchema);
 
 var myLogger = function(req, res, next) { // Esta funcion se va a ejecutar en cada peticion
     console.log('Paso por el logger');
@@ -23,6 +41,31 @@ app.get('/prueba', function(req, res, next) {
     // Vamos a generar un error
     next(new Error('Este error es de prueba y forzado'));
     //res.send('Respuesta de /prueba');
+});
+
+app.get('/agregar', function(req, res, next) {
+    var instancia = new ArtistaModel({nombre: 'Nombre de prueba'});
+    instancia.save( (err, artista) => {
+        if (err) {
+            // No se pudo guardar el artista
+            console.log('No se pudo guardar el artista');
+            res.send('No se pudo guardar el artista');
+            return;
+        }
+        console.log('Artista guardado');
+        res.send('Artista guardado');
+    });
+});
+
+app.get('/listar', function(req, res, next) {
+    ArtistaModel.find({}, (err, listado) => {
+        if (err) {
+            console.log('No se pueden listar los artistas');
+            res.send('No se pueden listar los artistas');
+            return;
+        }
+        res.send(listado);
+    });
 });
 
 app.use(myErrorHandler);
