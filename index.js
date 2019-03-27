@@ -1,6 +1,7 @@
 var express = require('express');
 var app = express();
 var mongoose = require('mongoose');
+var ArtistaModel = require("./models/artistaModel");
 
 // Conexion con la base de datos MongoDB
 mongoose.connect('mongodb://localhost/curso_nodejs_intermedio_m1u2', {}).then( () => {
@@ -11,13 +12,7 @@ mongoose.connect('mongodb://localhost/curso_nodejs_intermedio_m1u2', {}).then( (
     console.log(err);
 })
 
-// Definimos la estructura de los datos a guardar en Artista
-var ArtistaSchema = mongoose.Schema({
-    nombre: String
-});
 
-// Creamos un model (es la representacion del artista en nuestro sistema)
-var ArtistaModel = mongoose.model('Artista', ArtistaSchema);
 
 var myLogger = function(req, res, next) { // Esta funcion se va a ejecutar en cada peticion
     console.log('Paso por el logger');
