@@ -2,6 +2,9 @@ var express = require('express');
 var app = express();
 var mongoose = require('mongoose');
 var ArtistaModel = require("./models/artistaModel");
+var handlebars = require('express-handlebars').create({'defaultLayout': 'main'});
+app.engine('handlebars', handlebars.engine);
+app.set('view engine', 'handlebars');
 
 // Conexion con la base de datos MongoDB
 mongoose.connect('mongodb://localhost/curso_nodejs_intermedio_m1u2', {}).then( () => {
@@ -29,7 +32,17 @@ var myErrorHandler = function(error, req, res, next) {
 app.use(myLogger);
 
 app.get('/', function (request, response) {
-    response.send('Bienvenido al curso de NodeJS nivel Intermedio!');
+    response.render('principal'); // views/principal.handlebars
+    //response.send('Bienvenido al curso de NodeJS nivel Intermedio!');
+});
+
+// Ejemplos de llamada:
+// /hola/orlando
+// /hola/lorena
+// ...
+app.get('/hola/:nombre', function(req, res) { 
+    var nombre = req.params.nombre;
+    res.render('hola', {nombrePasadoEnURL: nombre});
 });
 
 app.get('/prueba', function(req, res, next) {
