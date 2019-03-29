@@ -2,6 +2,7 @@ var express = require('express');
 var app = express();
 var mongoose = require('mongoose');
 var ArtistaModel = require("./models/artistaModel");
+var CancionModel = require("./models/cancionModel");
 var body_parser = require("body-parser");
 var handlebars = require('express-handlebars').create({'defaultLayout': 'main'});
 app.engine('handlebars', handlebars.engine);
@@ -96,6 +97,13 @@ app.use('/artistas', require('./controllers/artistaControllers'));
  *  POST /api/artistas -> Agregar un artista
  *  PUT /api/artistas/:id -> Actualizar los datos del artista cuyo ID es pasado como parametro
  *  DELETE /api/artistas/:id -> Borrar el artista cuyo ID es pasado como parametros
+ * 
+ * Canciones
+ *  GET /api/artistas/:artista_id/canciones -> Listado de canciones del artista (artista_id)
+ *  GET /api/artistas/:artista_id/canciones/:id -> Obtener la cancion cuyo id es ID 
+ *  POST /api/artistas/:artista_id/canciones -> Agregar una cancion al artista (artista_id)
+ *  PUT /api/artistas/:artista_id/canciones/:id -> Actualizar la cancion
+ *  DELETE /api/artistas/:artista_id/canciones/:id -> Borrar la cancion
  */
 
 
@@ -156,6 +164,77 @@ app.delete('/api/artistas/:id', function (req, res, next) {
         res.status(204).send(); // Codigo HTTP 204 Sin contenido (no hay nada que responder, pero la operacion fue exitosa)
     });
 });
+
+// Canciones
+
+// Listado de canciones del artista
+app.get('/api/artistas/:artista_id/canciones', function(req, res, next) {
+    var artistaId = req.params.artista_id;
+    CancionModel.find({ artista_id: artistaId}, (err, listado) => {
+      if (err) {
+        next(new Error("No se pudieron obtener las canciones"));
+        return;
+      }
+      res.send(listado);
+    });
+});
+
+// Obtener una cancion
+app.get('/api/artistas/:artista_id/canciones/:id', function (req, res, next) {
+    var cancionId = req.params.id;
+    CancionModel.findById(cancionId, (err, cancion) => {
+        if (err) {
+            next(new Error("No se pudo encontrar la cancion"));
+            return;
+        }
+        res.send(cancion);
+    });
+});
+
+// Agregar una cancion
+app.post('/api/artistas/:artista_id/canciones', function (req, res, next) {
+    var nombre = req.body.nombre;
+    var duracion = req.body.duracion;
+    var artistaId = req.params.artista_id
+    var instancia = new CancionModel({ nombre: nombre, duracion: duracion, artista_id: artistaId });
+    instancia.save((err, cancion) => {
+        if (err) {
+            next(new Error('No se pudo guardar la cancion'));
+        }
+        res.status(201).send(cancion); // Codigo HTTP 201 es creado
+    });
+});
+
+// Actualizar una cancion
+app.put('/api/artistas/:artista_id/canciones/:id', function(req, res, next) {
+    var nombre = req.body.nombre;
+    var duracion = req.body.duracion;
+    var artistaId = req.params.artista_id;
+    var cancionId = req.params.id;
+    CancionModel.findByIdAndUpdate(
+      cancionId,
+      { nombre: nombre, duracion: duracion },
+      (err, cancion) => {
+        if (err) {
+          next(new Error("No se pudo actualizar la cancion"));
+        }
+        res.send(cancion);
+      }
+    );
+});
+
+// Borrar la cancion
+app.delete('/api/artistas/:artista_id/canciones/:id', function(req, res, next) {
+    var cancionId = req.params.id;
+    CancionModel.findByIdAndRemove(cancionId, (err, rta) => {
+        if (err) {
+            next(new Error('No se pudo borrar la cancion'));
+        }
+        res.status(204).send();
+    });
+});
+
+
 
 app.use(myErrorHandler);
 
