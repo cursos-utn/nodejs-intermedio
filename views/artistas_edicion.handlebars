@@ -1,8 +1,10 @@
 <h2>Edición de artista</h2>
 
 <form method="POST">
-    <label for="nombre">Nombre</label>
-    <input type="text" name="nombre" id="nombre" value="{{obj.nombre}}">
-    <button type="submit">Guardar</button>
+    <div class="form-group">
+      <label for="nombre">Nombre</label>
+      <input type="text" name="nombre" id="nombre" value="{{obj.nombre}}" class="form-control">
+    </div>
+    <button type="submit" class="btn btn-primary">Guardar</button>
     <a href="/artistas">Cancelar</a>
 </form>

@@ -1,6 +1,6 @@
 <h2>Listado de artistas</h2>
 
-<a href="/artistas/add">Agregar artista</a>
+<a href="/artistas/add" class="btn btn-primary"> <i class="fa fa-plus"></i></a>
 
 <table>
     <thead>
@@ -14,8 +14,8 @@
         <tr>
             <td>{{this.nombre}}</td>
             <td>
-                <a href="/artistas/{{this.id}}/edit">Editar</a>
-                <a href="/artistas/{{this.id}}/delete">Borrar</a>
+                <a href="/artistas/{{this.id}}/edit"><i class="fa fa-edit"></i></a>
+                <a href="/artistas/{{this.id}}/delete"><i class="fa fa-trash"></i> </a>
             </td>
         </tr>
         {{/each}}
