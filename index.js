@@ -86,9 +86,11 @@ app.get('/listar', function(req, res, next) {
 
 // Comienzo de la aplicacion
 
-app.use('/artistas', require('./controllers/artistaControllers'));
-app.use('/api/artistas', require('./controllers/artistaAPIController'));
-app.use('/api/artistas/:artista_id/canciones', require('./controllers/cancionAPIController'));
+app.use('/artistas', require('./controllers/artistaControllers')); // Handlebars
+app.use('/artistas/:artista_id/canciones', require('./controllers/cancionController'));
+
+app.use('/api/artistas', require('./controllers/artistaAPIController')); // API
+app.use('/api/artistas/:artista_id/canciones', require('./controllers/cancionAPIController')); // API
 
 
 

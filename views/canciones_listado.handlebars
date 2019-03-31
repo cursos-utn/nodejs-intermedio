@@ -1,0 +1,27 @@
+<h2>Listado de canciones</h2>
+
+<a href="/artistas">Volver al listado de Artistas</a> <br>
+
+<a href="/artistas/{{artista_id}}/canciones/add" class="btn btn-primary"> <i class="fa fa-plus"></i></a>
+
+<table>
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Duración</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#each listado}}
+        <tr>
+            <td>{{this.nombre}}</td>
+            <td>{{this.duracion}}</td>
+            <td>
+                <a href="/artistas/{{artista_id}}/canciones/{{this.id}}/edit"><i class="fa fa-edit"></i></a>
+                <a href="/artistas/{{artista_id}}/canciones/{{this.id}}/delete"><i class="fa fa-trash"></i> </a>
+            </td>
+        </tr>
+        {{/each}}
+    </tbody>
+</table>
