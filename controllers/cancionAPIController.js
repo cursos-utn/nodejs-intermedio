@@ -1,7 +1,7 @@
 var app = require("express").Router({ mergeParams: true });
+var service = require('../services/cancionService');
+
 var CancionModel = require("../models/cancionModel");
-var ArtistaModel = require("../models/artistaModel");
-var http = require("axios");
 
 /**
  *  Canciones
@@ -15,25 +15,21 @@ var http = require("axios");
 // Listado de canciones del artista
 app.get("/", function(req, res, next) {
   var artistaId = req.params.artista_id;
-  CancionModel.find({ artista_id: artistaId }, (err, listado) => {
-    if (err) {
-      next(new Error("No se pudieron obtener las canciones"));
-      return;
-    }
+  service.list(artistaId).then(listado => {
     res.send(listado);
-  });
+  }).catch( err => {
+    next(new Error('No se pudieron obtener las canciones'));
+  })
 });
 
 // Obtener una cancion
 app.get("/:id", function(req, res, next) {
   var cancionId = req.params.id;
-  CancionModel.findById(cancionId, (err, cancion) => {
-    if (err) {
-      next(new Error("No se pudo encontrar la cancion"));
-      return;
-    }
+  service.get(cancionId).then( cancion => {
     res.send(cancion);
-  });
+  }).catch( err => {
+    next(new Error("No se pudo encontrar la cancion"));
+  })
 });
 
 // Agregar una cancion
@@ -46,12 +42,11 @@ app.post("/", function(req, res, next) {
     duracion: duracion,
     artista_id: artistaId
   });
-  instancia.save((err, cancion) => {
-    if (err) {
-      next(new Error("No se pudo guardar la cancion"));
-    }
+  service.save(instancia, true).then( cancion => {
     res.status(201).send(cancion); // Codigo HTTP 201 es creado
-  });
+  }).catch(err => {
+    next(new Error("No se pudo guardar la cancion"));
+  })
 });
 
 // Actualizar una cancion
@@ -60,27 +55,26 @@ app.put("/:id", function(req, res, next) {
   var duracion = req.body.duracion;
   var artistaId = req.params.artista_id;
   var cancionId = req.params.id;
-  CancionModel.findByIdAndUpdate(
-    cancionId,
-    { nombre: nombre, duracion: duracion },
-    (err, cancion) => {
-      if (err) {
-        next(new Error("No se pudo actualizar la cancion"));
-      }
-      res.send(cancion);
-    }
-  );
+  var instancia = new CancionModel({
+    nombre: nombre,
+    duracion: duracion,
+    artista_id: artistaId
+  });
+  service.save(instancia, false).then( cancion => {
+    res.send(cancion);
+  }).catch( err => {
+    next(new Error("No se pudo actualizar la cancion"));
+  })
 });
 
 // Borrar la cancion
 app.delete("/:id", function(req, res, next) {
   var cancionId = req.params.id;
-  CancionModel.findByIdAndRemove(cancionId, (err, rta) => {
-    if (err) {
-      next(new Error("No se pudo borrar la cancion"));
-    }
+  service.delete(cancionId).then(rta => {
     res.status(204).send();
-  });
+  }).catch(err => {
+    next(new Error("No se pudo borrar la cancion"));
+  })
 });
 
 // Retornar la letra de la cancion
@@ -90,27 +84,11 @@ app.get("/:id/lyrics", function(req, res, next) {
   // retornar la respuesta
   var artistaId = req.params.artista_id;
   var cancionId = req.params.id;
-  ArtistaModel.findById(artistaId, (err, artista) => {
-    if (err) {
-      next(new Error("No se encontro el artista"));
-    }
-    CancionModel.findById(cancionId, (err, cancion) => {
-      if (err) {
-        next(new Error("No se encontro la cancion"));
-      }
-      var nombreArtista = artista.nombre;
-      var nombreCancion = cancion.nombre;
-      http
-        .get("https://api.lyrics.ovh/v1/"+nombreArtista+"/"+nombreCancion)
-        .then(respuesta => {
-          res.send(respuesta.data.lyrics);
-        })
-        .catch(error => {
-            console.log(error);
-          next(new Error("No se pudo obtener la letra"));
-        });
-    });
-  });
+  service.lyrics(artistaId, cancionId).then(lyrics => {
+    res.send(lyrics);
+  }).catch(err => {
+    next(new Error("No se pudo obtener la letra"));
+  })
 });
 
 module.exports = app;
