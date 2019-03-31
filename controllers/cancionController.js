@@ -1,5 +1,7 @@
 var app = require('express').Router({mergeParams: true});
 var CancionModel = require('../models/cancionModel');
+var ArtistaModel = require('../models/artistaModel');
+var http = require('axios');
 
 // /artistas/:artista_id/canciones 
 // Listado de canciones del artista
@@ -67,5 +69,35 @@ app.get('/:id/delete', function(req, res, next) {
         res.redirect('/artistas/'+artistaId+'/canciones');
     })
 })
+
+// Retornar la letra de la cancion
+app.get("/:id/lyrics", function(req, res, next) {
+  // Debemos obtener el artista y la cancion por sus Ids
+  // Realizar peticion a servidor de letras (Necesitamos componente de conexion. Usamos axios)
+  // retornar la respuesta
+  var artistaId = req.params.artista_id;
+  var cancionId = req.params.id;
+  ArtistaModel.findById(artistaId, (err, artista) => {
+    if (err) {
+      next(new Error("No se encontro el artista"));
+    }
+    CancionModel.findById(cancionId, (err, cancion) => {
+      if (err) {
+        next(new Error("No se encontro la cancion"));
+      }
+      var nombreArtista = artista.nombre;
+      var nombreCancion = cancion.nombre;
+      http
+        .get("https://api.lyrics.ovh/v1/"+nombreArtista+"/"+nombreCancion)
+        .then(respuesta => {
+          res.render("canciones_letra", {letra: respuesta.data.lyrics});
+        })
+        .catch(error => {
+            console.log(error);
+          next(new Error("No se pudo obtener la letra"));
+        });
+    });
+  });
+});
 
 module.exports = app;
