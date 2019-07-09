@@ -3,6 +3,10 @@
 ## Descripción
 Proyecto del curso NodeJS - Intermedio. 
 
+## Requisitos
+
+Tener instalado MongoDB en el equipo (Se puede acceder a la documentación y descargar de https://www.mongodb.com/what-is-mongodb)
+
 ## Instalación
 
 npm install
