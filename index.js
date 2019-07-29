@@ -17,6 +17,21 @@ mongoose.connect('mongodb://localhost/curso_nodejs_intermedio_m1u2', {}).then( (
     console.log(err);
 })
 
+// Memcached
+var session = require("express-session");
+var MemcachedStore = require('connect-memcached')(session);
+app.use(
+    session({
+        key: "curso_node",
+        secret: 'clave-muy-Segura01',
+        proxy: "true",
+        resave: false,
+        saveUninitialized: false,
+        store: new MemcachedStore({
+            hosts: ['localhost']
+        })
+    })
+);
 
 
 var myLogger = function(req, res, next) { // Esta funcion se va a ejecutar en cada peticion
@@ -83,6 +98,13 @@ app.get('/listar', function(req, res, next) {
     });
 });
 
+app.get('/contador', function (req, res) {
+    if (!req.session.contador) {
+        req.session.contador = 0;
+    }
+    req.session.contador++;
+    res.send(`La cantidad de veces que llamaste a esta página es ${req.session.contador}`);
+});
 
 // Comienzo de la aplicacion
 
