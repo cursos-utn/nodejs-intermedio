@@ -1,0 +1,5 @@
+PUERTO=3000
+DB_HOST="localhost"
+DB_COLLECTION="curso_nodejs_intermedio"
+MEMCACHED_SERVER="localhost"
+MEMCACHED_SECRET="clave-muy-secreta-01-memcached"

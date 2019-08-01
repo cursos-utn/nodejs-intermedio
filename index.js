@@ -8,8 +8,11 @@ var handlebars = require('express-handlebars').create({'defaultLayout': 'main'})
 app.engine('handlebars', handlebars.engine);
 app.set('view engine', 'handlebars');
 
+const dotenv = require('dotenv');
+dotenv.config();
+
 // Conexion con la base de datos MongoDB
-mongoose.connect('mongodb://localhost/curso_nodejs_intermedio_m1u2', {}).then( () => {
+mongoose.connect(`mongodb://${process.env.DB_HOST}/${process.env.DB_COLLECTION}`, {}).then( () => {
     // Conexion exitosa
     console.log('Conexion exitosa con MongoDB');
 }).catch( (err) => {
@@ -23,12 +26,12 @@ var MemcachedStore = require('connect-memcached')(session);
 app.use(
     session({
         key: "curso_node",
-        secret: 'clave-muy-Segura01',
+        secret: process.env.MEMCACHED_SECRET,
         proxy: "true",
         resave: false,
         saveUninitialized: false,
         store: new MemcachedStore({
-            hosts: ['localhost']
+            hosts: [process.env.MEMCACHED_SERVER]
         })
     })
 );
@@ -119,9 +122,8 @@ app.use('/api/artistas/:artista_id/canciones', require('./controllers/cancionAPI
 
 app.use(myErrorHandler);
 
-const server = app.listen(3000, function () {
-    console.log('Iniciando la aplicación en http://localhost:3000 <- copia esta URL en tu navegador');
+const server = app.listen(process.env.PUERTO, function () {
+    console.log(`Iniciando la aplicación en http://localhost:${process.env.PUERTO} <- copia esta URL en tu navegador`);
 });
-
 
 module.exports = server;
