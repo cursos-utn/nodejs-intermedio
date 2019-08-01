@@ -13,6 +13,12 @@ npm install
 node app.js 
 ```
 
+## Testeo de la aplicación
+
+```
+npm test
+```
+
 ## Rutas de prueba
 
 * Ruta principal
