@@ -119,6 +119,9 @@ app.use('/api/artistas/:artista_id/canciones', require('./controllers/cancionAPI
 
 app.use(myErrorHandler);
 
-app.listen(3000, function () {
+const server = app.listen(3000, function () {
     console.log('Iniciando la aplicación en http://localhost:3000 <- copia esta URL en tu navegador');
 });
+
+
+module.exports = server;

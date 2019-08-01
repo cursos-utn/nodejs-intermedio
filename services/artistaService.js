@@ -54,3 +54,14 @@ module.exports.delete = function(id) {
         })
     })
 }
+
+module.exports.findByNombre = function(nombre) {
+    return new Promise((resolve, reject) => {
+        ArtistaModel.findOne({nombre: nombre}, (err, respuesta) => {
+            if (err) {
+                reject(err);
+            }
+            resolve(respuesta);
+        })
+    })
+}

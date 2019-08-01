@@ -1,10 +1,10 @@
 {
-  "name": "Curso NodeJS - Intermedio",
+  "name": "CursoNodeJS_Intermedio",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha --exit"
   },
   "keywords": [],
   "author": "",
@@ -17,5 +17,11 @@
     "express-handlebars": "^3.0.2",
     "express-session": "^1.16.2",
     "mongoose": "^5.4.20"
+  },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "chai-http": "^4.3.0",
+    "mocha": "^6.2.0",
+    "nock": "^10.0.6"
   }
 }
