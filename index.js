@@ -12,13 +12,14 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 // Conexion con la base de datos MongoDB
-mongoose.connect(`mongodb://${process.env.DB_HOST}/${process.env.DB_COLLECTION}`, {}).then( () => {
-    // Conexion exitosa
+try {
+    mongoose.connect(`mongodb://${process.env.DB_HOST}/${process.env.DB_COLLECTION}`, {});
     console.log('Conexion exitosa con MongoDB');
-}).catch( (err) => {
+} catch (err) {
     console.log('No me pude conectar con MongoDB');
     console.log(err);
-})
+}
+
 
 // Memcached
 var session = require("express-session");
