@@ -45,9 +45,31 @@ describe("cancionService", () => {
         } catch(e) {
             e.should.not.be.null
         }
-
     })
 
+
+
+    it('peticion con artista que no existe', async () => {
+        try {
+            const mockServer = nock('https://api.lyrics.ovh').get('/v1/Madonna/Like%20a%20Prayer').reply(404, {});
+            const respuesta = await cancionService.lyrics(0, cancion._id)
+            assert.ok(false)
+        } catch (e) {
+            e.should.not.be.null
+        }
+    })   
+    
+    /*
+    it('peticion con cancion que no existe', async () => {
+        try {
+            const mockServer = nock('https://api.lyrics.ovh').get('/v1/Madonna/Like%20a%20Prayer').reply(404, {});
+            const respuesta = await cancionService.lyrics(artista._id, 0)
+            assert.ok(false)
+        } catch (e) {
+            e.should.not.be.null
+        }
+    })     
+*/
     after(function (done) {
         server.close();
         done();

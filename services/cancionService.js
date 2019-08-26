@@ -76,19 +76,19 @@ module.exports.findByNombre = function (nombre) {
 module.exports.lyrics = function (artistaId, cancionId) {
     return new Promise((resolve, reject) => {
         ArtistaModel.findById(artistaId, (err, artista) => {
-            if (err) {
-                throw new Error("No se encontro el artista");
-            }
             if (!artista) {
-                throw new Error("No se encontro el artista");
+                reject(new Error("No se encontro el artista"));
             }
+            
+    
             CancionModel.findById(cancionId, (err, cancion) => {
                 if (err) {
-                    next(new Error("No se encontro la cancion"));
+                    reject(new Error("No se encontro la cancion"));
                 }
                 if (!cancion) {
-                    next(new Error("No se encontro la cancion"));
+                    reject(new Error("No se encontro la cancion"));
                 }
+                //console.log(cancion);
                 var nombreArtista = artista.nombre;
                 var nombreCancion = cancion.nombre;
                 http
